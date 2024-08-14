@@ -10,8 +10,7 @@ export default function Confirm({ text }: ConfirmProps) {
         <div
             className="flex items-center justify-center p-2 bg-green-500 rounded-lg disabled:bg-neutral-400 disabled:text-neutral-300 disabled:cursor-not-allowed"
         >
-            <CheckBadgeIcon className="h-6 w-6 text-white text-gray-500" />
-
+            <CheckBadgeIcon className="h-6 w-6 text-white text-gray-400" />
             {text}
         </div>
     );
