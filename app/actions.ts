@@ -1,30 +1,25 @@
 "use server";
 import { z } from "zod";
-// import bcrypt from "bcrypt";
 // import getSession from "@/lib/session";
 import { redirect } from "next/navigation";
 
-// const checkEmailExists = async (email: string) => {
-//   const user = await db.user.findUnique({
-//     where: {
-//       email,
-//     },
-//     select: {
-//       id: true,
-//     },
-//   });
-//   return Boolean(user);
-// };
+const checkJodEmail = async (email: string) => {
+  return email.includes("@zod.com");
+};
 
 const formSchema = z.object({
-  username: z.string().toLowerCase(),
-  email: z.string().email().toLowerCase(),
-  // .refine(checkEmailExists, "An account with this email does not exists."),
-  password: z.string({
-    required_error: "Password is required",
-  }),
-  //.min(PASSWORD_MIN_LENGTH)
-  //.regex(PASSWORD_REGEX, PASSWORD_REGEX_ERROR),
+  username: z.string().min(5).toLowerCase(),
+  email: z
+    .string()
+    .email()
+    .toLowerCase()
+    .refine(checkJodEmail, "Only @zod.com emails are allowed"),
+  password: z
+    .string({
+      required_error: "Password is required",
+    })
+    .min(10)
+    .regex(/\d/, "Password must contain at least one number"),
 });
 
 export const login = async (prevState: any, formData: FormData) => {
@@ -36,14 +31,19 @@ export const login = async (prevState: any, formData: FormData) => {
 
   const result = await formSchema.safeParseAsync(data);
   if (!result.success) {
-    return result.error.flatten();
+    return {
+      success: false,
+      ...result.error.flatten(),
+    };
   } else {
-    if (data.password === "12345")
+    if (data.password === "12asdfasdf")
       return {
+        success: true,
         fieldErrors: {},
       };
     else
       return {
+        success: false,
         fieldErrors: {
           password: ["Wrong Password."],
           email: [],

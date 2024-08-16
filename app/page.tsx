@@ -42,7 +42,7 @@ export default function Home() {
             />
 
             <FormButton text="Log in" />
-            {Object.keys(state!.fieldErrors).length === 0 ? <Confirm text = "Welcome Back"/> : null }
+            {state!.success ? <Confirm text = "Welcome Back"/> : null }
             
           </form>
         </div>
