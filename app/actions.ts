@@ -2,6 +2,7 @@
 import { z } from "zod";
 // import getSession from "@/lib/session";
 import { redirect } from "next/navigation";
+import db from "@/lib/db";
 
 const checkJodEmail = async (email: string) => {
   return email.includes("@zod.com");
@@ -83,3 +84,25 @@ export const login = async (prevState: any, formData: FormData) => {
     // }
   }
 };
+
+export async function getTweetsCount() {
+  const count = await db.tweet.count();
+  return count;
+}
+
+export async function getMoreTweets(page: number) {
+  console.log(page);
+  const products = await db.tweet.findMany({
+    select: {
+      id: true,
+      tweet: true,
+      created_at: true,
+    },
+    skip: page * 5,
+    take: 5,
+    orderBy: {
+      created_at: "desc",
+    },
+  });
+  return products;
+}
