@@ -1,3 +1,4 @@
+import AddTweet from "@/components/add-tweet";
 import Tweetlist from "@/components/tweet-list";
 import db from "@/lib/db";
 import { Prisma } from "@prisma/client";
@@ -31,7 +32,8 @@ interface IParams {
 
 export default async function Tweets() {
   return (
-    <div className="flex justify-center items-center">
+    <div className="flex flex-col justify-center items-center">
+      <AddTweet />
       <Tweetlist key="tweet" />
     </div>
   );

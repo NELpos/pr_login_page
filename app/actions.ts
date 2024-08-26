@@ -3,6 +3,9 @@ import { z } from "zod";
 // import getSession from "@/lib/session";
 import { redirect } from "next/navigation";
 import db from "@/lib/db";
+import { tweetSchema } from "@/lib/schema";
+import getSession from "@/lib/session";
+import { revalidatePath } from "next/cache";
 
 const checkJodEmail = async (email: string) => {
   return email.includes("@zod.com");
@@ -91,7 +94,6 @@ export async function getTweetsCount() {
 }
 
 export async function getMoreTweets(page: number) {
-  console.log(page);
   const products = await db.tweet.findMany({
     select: {
       id: true,
@@ -105,4 +107,34 @@ export async function getMoreTweets(page: number) {
     },
   });
   return products;
+}
+
+export async function uploadTweet(formdata: FormData) {
+  const data = {
+    tweet: formdata.get("tweet"),
+  };
+
+  const result = tweetSchema.safeParse(data);
+  if (!result.success) {
+    return result.error.flatten();
+  } else {
+    const session = await getSession();
+    if (session.id) {
+      const product = await db.tweet.create({
+        data: {
+          tweet: result.data.tweet,
+          user: {
+            connect: {
+              id: session.id,
+            },
+          },
+        },
+        select: {
+          id: true,
+        },
+      });
+      revalidatePath("/");
+      redirect("/");
+    }
+  }
 }
