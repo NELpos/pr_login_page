@@ -6,14 +6,13 @@ interface ButtonProps {
 }
 
 export default function FormButton({ text }: ButtonProps) {
-    const { pending } = useFormStatus();
-    return (
-        <button
-          disabled={pending}
-          className="primary-btn h-10 bg-cyan-400 rounded-lg disabled:bg-neutral-400 disabled:text-neutral-300 disabled:cursor-not-allowed"
-        >
-          {pending ? "로딩 중" : text}
-        </button>
-      );
-
+  const { pending } = useFormStatus();
+  return (
+    <button
+      disabled={pending}
+      className="primary-btn w-24 h-10 bg-orange-500 rounded-lg disabled:bg-neutral-400 disabled:text-neutral-300 disabled:cursor-not-allowed"
+    >
+      {pending ? "로딩 중" : text}
+    </button>
+  );
 }
